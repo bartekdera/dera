@@ -14,3 +14,4 @@ mcedit z1.sh
 
 `#!/bin/bash`
 ```
+# Varables (zmienne)
