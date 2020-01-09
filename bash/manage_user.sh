@@ -1,23 +1,27 @@
-#!/bin/bash
+!/bin/bash
+#zmiana globalna
+#ładnowanie danych z pliku
+user_list=(`cat users.txt`)
 
-
-
-function loadUsers() {
-    echo "loadUsers..."
+function ShowUsers() {
+    echo "loadUsers..."u
+    echo"Lista:"
+    for(( i=0; i<=${#user_list[@]}; i++ ))
+    do
+	echo " ${user_list[i]}"
+    done
 }
 
-
-
-function showUsers() {
-    echo "showUsers..."
-}
 
 
 
 function addUsers() {
     echo "addUsers..."
+    for user in "${user_list[@]}"
+    do
+	echo ${user}
+    done
 }
-
 
 
 function delUsers() {
@@ -37,31 +41,31 @@ function deniedRemoteLogin() {
 }
 
 
-function quit() {
-    exit 0 
-}
-
 function help() {
 cat <<EndOfMessage
     Opis opcji skryptu:
     -------------------
-    LU -> Ładowanie 
+    LU - Ładowanie użytkowników z pliku
+    SU - listowanie załadowanych użytkowników
 EndOfMessage
+}
+
+function quit {
+    exit 0
 }
 
 
 #menu
-select option in LU SU AU DU ARL DRL HELP QUIT
+select option in SU AU DU ARL DRL HELP quit
 do
     case ${option} in
-	"LU") loadUsers ;;	"LU") LoadUsers ;;
-	"LU") showUsers ;;	"LU") LoadUsers ;;
-	"LU") addUsers ;;	"LU") LoadUsers ;;
-	"LU") delUsers ;;	"LU") LoadUsers ;;
-	"LU") acceptRemotedLogin ;;	"LU") LoadUsers ;;
-	"LU") deniedRemotedLogin ;;	"LU") LoadUsers ;;
-	"HELP") help ;;
-	"quit") quit ;;
+	 "SU") ShowUsers ;;
+	 "AU") AddUsers ;;
+	 "DU") DelUsers ;;
+	 "ARL") AcceptRemotedLogin ;;
+	 "DRL") DeniedRemotedLogin ;;
+	 "HELP") help ;;
+	 "quit") quit ;;
     *)help
     esac
 done
