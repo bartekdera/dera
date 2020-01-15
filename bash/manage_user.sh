@@ -1,7 +1,12 @@
-!/bin/bash
+#!/bin/bash
+
+
 #zmiana globalna
 #ładnowanie danych z pliku
+
 user_list=(`cat users.txt`)
+
+
 
 function ShowUsers() {
     echo "loadUsers..."u
@@ -17,15 +22,32 @@ function ShowUsers() {
 
 function addUsers() {
     echo "addUsers..."
-    for user in "${user_list[@]}"
+    echo -n "Are you sure? [y/n]"
+    read sure 
+    if [ "${sure}" == "y" ]; then
+	for user in "${user_list[@]}"
     do
-	echo ${user}
-    done
+	    echo "Add user: ${user}"
+	    sudo useradd ${user} -s /sbin/nologin -g "users"
+        done
+    fi
 }
+
 
 
 function delUsers() {
     echo "delUsers..."
+    echo "Are you sure? [y/n]"
+    read sure 
+    if [ ${sure} == "y" ]; then
+	for user in "${user_list[@]}"
+	do
+	    echo "Remove user ${user} [OK]"
+	sudo userdel -r ${user}
+	done
+
+
+    fi
 }
 
 
@@ -59,13 +81,13 @@ function quit {
 select option in SU AU DU ARL DRL HELP quit
 do
     case ${option} in
-	 "SU") ShowUsers ;;
-	 "AU") AddUsers ;;
-	 "DU") DelUsers ;;
-	 "ARL") AcceptRemotedLogin ;;
-	 "DRL") DeniedRemotedLogin ;;
-	 "HELP") help ;;
-	 "quit") quit ;;
+	 "SU" ) showUsers ;;
+	 "AU" ) addUsers ;;
+	 "DU" ) delUsers ;;
+	 "ARL" ) acceptRemotedLogin ;;
+	 "DRL" ) deniedRemotedLogin ;;
+	 "HELP" ) help ;;
+	 "quit" ) quit ;;
     *)help
     esac
 done
