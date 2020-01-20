@@ -5,12 +5,23 @@
 #ładnowanie danych z pliku
 
 user_list=(`cat users.txt`)
+status="FAIL"
+RED=
+
+
+function checkStatusCode () {
+    if [ $? == 0 ]; then
+	status="PASS"
+    else
+	status="fail"
+    fi
+}
 
 
 
-function ShowUsers() {
+function showUsers() {
     echo "loadUsers..."u
-    echo"Lista:"
+    echo "Lista: "
     for(( i=0; i<=${#user_list[@]}; i++ ))
     do
 	echo " ${user_list[i]}"
@@ -27,8 +38,9 @@ function addUsers() {
     if [ "${sure}" == "y" ]; then
 	for user in "${user_list[@]}"
     do
-	    echo "Add user: ${user}"
-	    sudo useradd ${user} -s /sbin/nologin -g "users"
+	    sudo useradd ${user} -m -s /sbin/nologin -g "users" 2> /dev/null
+	    checkStatusCode
+	    echo "add user:  ${user} [${status}]"
         done
     fi
 }
@@ -42,24 +54,37 @@ function delUsers() {
     if [ ${sure} == "y" ]; then
 	for user in "${user_list[@]}"
 	do
-	    echo "Remove user ${user} [OK]"
-	sudo userdel -r ${user}
+	    sudo userdel -r ${user} 2> /dev/null
+	    checkStatusCode
+	    echo "Remove user ${user} [${status}]"
 	done
-
-
     fi
 }
 
 
 
+
+
 function acceptRemoteLogin() {
     echo "acceptRemoteLogin..."
+	for user in "${user_list[@]}"
+	do
+	    sudo usermod -s /bin/bash ${user} 2> /dev/null
+	    checkStatusCode
+	    echo "Denied remote login for ${user} [${status}]"
+    done
 }
 
 
 
 function deniedRemoteLogin() {
     echo "deniedRemoteLogin..."
+    for user in "${user_list[@]}"
+    do
+	    sudo usermod -s /sbin/nologin ${user}
+	    checkStatusCode
+	    echo "Denied remote login for ${user} [${status}]"
+    done
 }
 
 
